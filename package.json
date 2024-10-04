@@ -1,0 +1,41 @@
+{
+  "name": "crude-build",
+  "title": "Crude Build",
+  "version": "0.0.1",
+  "homepage": "https://github.com/rawify/CrudeBuild.js",
+  "bugs": "https://github.com/rawify/CrudeBuild.js/issues",
+  "description": "A crude build utility for single file JavaScript projects",
+  "keywords": [
+    "bundler",
+    "javascript"
+  ],
+  "private": false,
+  "main": "crude-build.js",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:rawify/CrudeBuild.js.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/rawify"
+  },
+  "author": {
+    "name": "Robert Eisele",
+    "email": "robert@raw.org",
+    "url": "https://raw.org/"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "crude-build": "./bin/build.js"
+  },
+  "dependencies": {
+    "google-closure-compiler": "^20240317.0.0"
+  }
+}
