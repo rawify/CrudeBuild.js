@@ -36,11 +36,10 @@ function createCJS_TPL(moduleName, licenseHeader, sourceCode, externs) {
 ${formatExterns(externs, 'cjs')}
 ${sourceCode}
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = ${moduleName};
-module.exports = ${moduleName}; 
+Object.defineProperty(${moduleName}, "__esModule", { 'value': true });
+Complex['default'] = ${moduleName};
+Complex['${moduleName}'] = ${moduleName};
+module['exports'] = ${moduleName};
 `;
 }
 
