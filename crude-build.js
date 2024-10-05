@@ -37,8 +37,8 @@ ${formatExterns(externs, 'cjs')}
 ${sourceCode}
 
 Object.defineProperty(${moduleName}, "__esModule", { 'value': true });
-Complex['default'] = ${moduleName};
-Complex['${moduleName}'] = ${moduleName};
+${moduleName}['default'] = ${moduleName};
+${moduleName}['${moduleName}'] = ${moduleName};
 module['exports'] = ${moduleName};
 `;
 }
