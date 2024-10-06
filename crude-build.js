@@ -48,7 +48,7 @@ function createESM_TPL(moduleName, licenseHeader, sourceCode, externs) {
 ${formatExterns(externs, 'esm')}
 ${sourceCode}
 export {
-  ${moduleName} as default
+  ${moduleName} as default, ${moduleName}
 };
 `;
 }
