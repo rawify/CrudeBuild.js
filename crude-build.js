@@ -58,18 +58,7 @@ function createIIFE_TPL(moduleName, licenseHeader, sourceCode, externs) {
 (function(window) {
 ${sourceCode}
 
-  if (typeof define === 'function' && define['amd']) {
-    define([], function() {
-      return ${moduleName};
-    });
-  } else if (typeof exports === 'object') {
-    Object.defineProperty(${moduleName}, "__esModule", { 'value': true });
-    ${moduleName}['default'] = ${moduleName};
-    ${moduleName}['${moduleName}'] = ${moduleName};
-    module['exports'] = ${moduleName};
-  } else {
-    window['${moduleName}'] = ${moduleName};
-  }
+  window['${moduleName}'] = ${moduleName};
 
 })(this);
 `
@@ -77,10 +66,6 @@ ${sourceCode}
 
 function getExterns(externs, type) {
   let str = "";
-
-  if (type === "var") {
-    str+= "var module;\n";
-  }
 
   for (let e of externs) {
     switch (type) {
