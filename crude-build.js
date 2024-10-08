@@ -5,7 +5,7 @@ const ClosureCompiler = require('google-closure-compiler').compiler;
 
 const moduleName = process?.argv?.[2] || "None";
 
-function createLicense(json) {
+function createLicenseHeader(json) {
 
   function getToday() {
     const date = new Date;
@@ -33,7 +33,7 @@ function createOrig_TPL(moduleName, licenseHeader, sourceCode) {
 
 function createCJS_TPL(moduleName, licenseHeader, sourceCode, externs) {
   return `'use strict';
-${formatExterns(externs, 'cjs')}
+${getExterns(externs, 'cjs')}
 ${sourceCode}
 
 Object.defineProperty(${moduleName}, "__esModule", { 'value': true });
@@ -45,7 +45,7 @@ module['exports'] = ${moduleName};
 
 function createESM_TPL(moduleName, licenseHeader, sourceCode, externs) {
   return `'use strict';
-${formatExterns(externs, 'esm')}
+${getExterns(externs, 'esm')}
 ${sourceCode}
 export {
   ${moduleName} as default, ${moduleName}
@@ -57,12 +57,25 @@ function createIIFE_TPL(moduleName, licenseHeader, sourceCode, externs) {
   return `${licenseHeader}
 (function(window) {
 ${sourceCode}
-  window['${moduleName}'] = ${moduleName};
+
+  if (typeof define === 'function' && define['amd']) {
+    define([], function() {
+      return ${moduleName};
+    });
+  } else if (typeof exports === 'object') {
+    Object.defineProperty(${moduleName}, "__esModule", { 'value': true });
+    ${moduleName}['default'] = ${moduleName};
+    ${moduleName}['${moduleName}'] = ${moduleName};
+    module['exports'] = ${moduleName};
+  } else {
+    window['${moduleName}'] = ${moduleName};
+  }
+
 })(this);
 `
 }
 
-function formatExterns(externs, type) {
+function getExterns(externs, type) {
   let str = "";
   for (let e of externs) {
     switch (type) {
@@ -91,7 +104,7 @@ fs.readFile('package.json', function (err, package) {
     }
 
     let sourceCode = data.toString().replace(/\/\*.+?@license.+?\*\//s, '').trim();
-    let licenseHeader = createLicense(json);
+    let licenseHeader = createLicenseHeader(json);
 
     const ORIG_TPL = createOrig_TPL(moduleName, licenseHeader, sourceCode);
 
@@ -111,13 +124,15 @@ fs.readFile('package.json', function (err, package) {
     fs.writeFile('dist/' + moduleName.toLocaleLowerCase() + '.mjs', ESM_TPL, (err) => { });
     fs.writeFile('dist/' + moduleName.toLocaleLowerCase() + '.min.js', IIFE_TPL, (err) => { });
 
-    fs.writeFile('externs.js', formatExterns(externs, 'var'), function () {
+    fs.writeFile('externs.js', getExterns(externs, 'var'), function () {
 
       const closureCompiler = new ClosureCompiler({
         js: 'dist/' + moduleName.toLocaleLowerCase() + '.min.js',
-        compilation_level: sourceCode.indexOf('!simple-compilation') !== -1 ? 'SIMPLE' : 'ADVANCED',
+        compilationLevel: sourceCode.indexOf('!simple-compilation') !== -1 ? 'SIMPLE' : 'ADVANCED',
+        warningLevel: 'VERBOSE',
         externs: 'externs.js',
-        emit_use_strict: true
+        emit_use_strict: true,
+        languageOut: 'ES5'
       });
 
       // Minify IIFE
