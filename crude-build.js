@@ -122,7 +122,7 @@ fs.readFile('package.json', function (err, package) {
         warningLevel: 'VERBOSE',
         externs: 'externs.js',
         emit_use_strict: true,
-        languageOut: 'ES5'
+        languageOut: 'ES6'
       });
 
       // Minify IIFE
