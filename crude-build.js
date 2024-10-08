@@ -77,6 +77,11 @@ ${sourceCode}
 
 function getExterns(externs, type) {
   let str = "";
+
+  if (type === "var") {
+    str+= "var module;\n";
+  }
+
   for (let e of externs) {
     switch (type) {
       case 'var':
