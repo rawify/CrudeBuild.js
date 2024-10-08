@@ -27,6 +27,45 @@ function createLicenseHeader(json) {
 `;
 }
 
+function createLicenseFile(json) {
+
+  if (json.license === 'MIT') {
+    return `MIT License
+
+Copyright (c) ${new Date().getFullYear()} ${json.author.name}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+`;
+  } else {
+    return "";
+  }
+}
+
+function createLicenseReadme(json) {
+
+  return `## Copyright and Licensing
+
+Copyright (c) ${new Date().getFullYear()}, [${json.author.name}](${json.author.url})
+Licensed under the MIT license.
+`;
+}
+
 function createOrig_TPL(moduleName, licenseHeader, sourceCode) {
   return licenseHeader + sourceCode + "\n";
 }
@@ -113,6 +152,14 @@ fs.readFile('package.json', function (err, package) {
     fs.writeFile('dist/' + moduleName.toLocaleLowerCase() + '.js', CJS_TPL, (err) => { });
     fs.writeFile('dist/' + moduleName.toLocaleLowerCase() + '.mjs', ESM_TPL, (err) => { });
     fs.writeFile('dist/' + moduleName.toLocaleLowerCase() + '.min.js', IIFE_TPL, (err) => { });
+
+    fs.writeFile('LICENSE', createLicenseFile(json), (err) => { });
+
+    fs.readFile('README.md', (err, data) => {
+      let source = data.toString().replace(/##\s*copyright[^#]+/im, '').trim();
+
+      fs.writeFile('README.md', source + "\n\n" + createLicenseReadme(json), () => { });
+    });
 
     fs.writeFile('externs.js', getExterns(externs, 'var'), function () {
 
