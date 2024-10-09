@@ -152,9 +152,9 @@ fs.readFile('package.json', function (err, package) {
 
     const ORIG_TPL = createOrig_TPL(moduleName, licenseHeader, sourceCode);
 
-    // Extract externs in format "import Quaternion from quaternion;"
+    // Extract externs in format "import Quaternion from 'quaternion';"
     const externs = [];
-    sourceCode = sourceCode.replace(/\s*import\s*([a-z0-9.-]+)\s*from\s*([a-z0-9.-]+)\s*;?/ig, function (_, name, inc) {
+    sourceCode = sourceCode.replace(/\s*import\s*([a-z0-9.-]+)\s*from\s*["']([a-z0-9.-]+)["']\s*;?/ig, function (_, name, inc) {
       externs.push({ name, inc });
       return '';
     });
