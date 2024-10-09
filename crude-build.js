@@ -97,7 +97,18 @@ function createIIFE_TPL(moduleName, licenseHeader, sourceCode, externs) {
 (function(window) {
 ${sourceCode}
 
-  window['${moduleName}'] = ${moduleName};
+  if (typeof define === 'function' && define['amd']) {
+    define([], function() {
+      return ${moduleName};
+    });
+  } else if (typeof exports === 'object') {
+    Object.defineProperty(${moduleName}, "__esModule", { 'value': true });
+    ${moduleName}['default'] = ${moduleName};
+    ${moduleName}['${moduleName}'] = ${moduleName};
+    module['exports'] = ${moduleName};
+  } else {
+    window['${moduleName}'] = ${moduleName};
+  }
 
 })(this);
 `
@@ -105,6 +116,10 @@ ${sourceCode}
 
 function getExterns(externs, type) {
   let str = "";
+
+  if (type === "var") {
+    str += "var module;\n";
+  }
 
   for (let e of externs) {
     switch (type) {
@@ -137,9 +152,9 @@ fs.readFile('package.json', function (err, package) {
 
     const ORIG_TPL = createOrig_TPL(moduleName, licenseHeader, sourceCode);
 
-    // Extract externs in format "/* import Quaternion from quaternion */"
+    // Extract externs in format "import Quaternion from quaternion;"
     const externs = [];
-    sourceCode = sourceCode.replace(/\/\*\s*import\s*([a-z0-9.-]+)\s*from\s*([a-z0-9.-]+)\s*\*\//ig, function (_, name, inc) {
+    sourceCode = sourceCode.replace(/\s*import\s*([a-z0-9.-]+)\s*from\s*([a-z0-9.-]+)\s*;?/ig, function (_, name, inc) {
       externs.push({ name, inc });
       return '';
     });
@@ -168,8 +183,7 @@ fs.readFile('package.json', function (err, package) {
         compilationLevel: sourceCode.indexOf('!simple-compilation') !== -1 ? 'SIMPLE' : 'ADVANCED',
         warningLevel: 'VERBOSE',
         externs: 'externs.js',
-        emit_use_strict: true,
-        languageOut: 'ES6'
+        emit_use_strict: true
       });
 
       // Minify IIFE

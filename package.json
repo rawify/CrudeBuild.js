@@ -1,7 +1,7 @@
 {
   "name": "crude-build",
   "title": "Crude Build",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "homepage": "https://github.com/rawify/CrudeBuild.js",
   "bugs": "https://github.com/rawify/CrudeBuild.js/issues",
   "description": "A crude build utility for single file JavaScript projects",
