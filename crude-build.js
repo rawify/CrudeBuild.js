@@ -62,7 +62,7 @@ function createLicenseReadme(json) {
   return `## Copyright and Licensing
 
 Copyright (c) ${new Date().getFullYear()}, [${json.author.name}](${json.author.url})
-Licensed under the MIT license.
+Licensed under the ${json.license} license.
 `;
 }
 
@@ -154,7 +154,7 @@ fs.readFile('package.json', function (err, package) {
 
     // Extract externs in format "import Quaternion from 'quaternion';"
     const externs = [];
-    sourceCode = sourceCode.replace(/\s*import\s*([a-z0-9.-]+)\s*from\s*["']([a-z0-9.-]+)["']\s*;?/ig, function (_, name, inc) {
+    sourceCode = sourceCode.replace(/\s*import\s*([a-z0-9.-]+)\s*from\s*["']([@/a-z0-9.-]+)["']\s*;?/ig, function (_, name, inc) {
       externs.push({ name, inc });
       return '';
     });
